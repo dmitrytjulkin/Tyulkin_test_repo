@@ -24,8 +24,9 @@ sleep_time = 0.2
 
 while True:
     if (GPIO.input(up) and GPIO.input(down)):
-        num = 257
-        print (num, dec2bin(num))
+        num = 255
+        print(num, dec2bin(num))
+        GPIO.output(leds, dec2bin(num))
         time.sleep(sleep_time)
         continue
     
