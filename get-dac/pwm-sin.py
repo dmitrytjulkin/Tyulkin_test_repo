@@ -1,5 +1,5 @@
 import pwm_dac as pd
-import signal_generator as sg
+import signal_generator_sin as sg
 import time
 
 amplitude = 3.2

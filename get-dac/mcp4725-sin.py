@@ -1,5 +1,5 @@
-import signal_generator as sg   #(4th task)
-import mcp4725_driver as md
+import signal_generator_sin as sg
+import mcp4725_driver as md         #(4th task)
 import time
 
 amplitude = 3.2
