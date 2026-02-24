@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 
-
+# TODO needs lots of changes
 class PWM_DAC:
     def __init__(self, gpio_pin, pwm_frequency, dynamic_range, verbose = False):
         self.gpio_pin = gpio_pin
