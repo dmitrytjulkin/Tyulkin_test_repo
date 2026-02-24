@@ -8,16 +8,19 @@ sampling_frequency = 1000
 
 if __name__ == "__main__":
     try:
-        driver = MCP4725(5.5, 0x61, True)
+        dac = r2r.R2R_DAC([16, 20, 21, 25, 26, 17, 27, 22], 3.183, True)
+
+        period = 1.0 / sampling_frequency
+        t = 0.0
 
         while True:
-            try:
-                voltage = float(input("Введите напряжение в Вольтах: "))
-                driver.set_voltage(voltage)
 
-            except ValueError:
-                print("Вы ввели не число. Попробуйте ещё раз\n")
+            cur_amplitude = sg.get_sin_wave_amplitude(signal_frequency, )
+            dac.set_voltage(cur_amplitude * amplitude)
+            sg.wait_for_sampling_period(sampling_frequency)
+
+            t += period
 
     finally:
-        driver.deinit()
+        dac.deinit()
 

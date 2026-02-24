@@ -20,25 +20,27 @@ class MCP4725:
             print("На вход ЦАП можно подавать только целые числа")
 
         if not (0 <= number <= 4095):
-            print("Число выходит за разрядность MCP4752 (12 бит)")
+            print("Число выходит за разрядность MCP4725 (12 бит)")
 
         first_byte = self.wm | self.pds | number >> 8
         second_byte = number & 0xFF
-        self.bus.write_byte_data(0x61, first_byte, second_byte)
+        self.bus.write_byte_data(self.address, first_byte, second_byte)
 
         if self.verbose:
             print(f"Число: {number}, отправленные по I2C данные: "
-                  "[0x{(self.address << 1):02X}, 0x{first_byte:02X},"
-                  "0x{second_byte:02X}]\n")
+                  f"[0x{(self.address << 1):02X}, 0x{first_byte:02X},"
+                  f"0x{second_byte:02X}]\n")
 
     def set_voltage(self, voltage):
-        if not (0.0 <= voltage <= dynamic_range):
+        if not (0.0 <= voltage <= self.dynamic_range):
             print(f"Напряжение выходит за динамический диапазон"
-                "ЦАП (0.00 - {dynamic_range:.2f} В)")
+                  f"ЦАП (0.00 - {self.dynamic_range:.2f} В)")
             print("Устанавливаем 0.0 В")
-            return 0        # what the hell i have to put here???
+            self.set_number(0)
+            return
 
-        return 0
+        else:
+            self.set_number(int(voltage / self.dynamic_range * 4095))
 
 if __name__ == "__main__":
     try:

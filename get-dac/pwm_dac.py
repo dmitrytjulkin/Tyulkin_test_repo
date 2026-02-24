@@ -1,5 +1,4 @@
 import RPi.GPIO as GPIO
-import time
 
 
 class PWM_DAC:
@@ -13,23 +12,18 @@ class PWM_DAC:
         GPIO.setup(self.gpio_pin, GPIO.OUT, initial = 0)
 
     def deinit(self):
-        GPIO.output(self.gpio_bits, 0)
+        GPIO.output(self.gpio_pin, 0)
         GPIO.cleanup()
-
-    def decimal2binary(value):
-        return [int(element) for element in bin(value)[2:].zfill(8)]
-
-    def set_number(self, value):
-        GPIO.output(self, decimal2binary (value))
 
     def set_voltage(self, voltage):
         if not (0.0 <= voltage <= self.dynamic_range):
             print(f"Напряжение выходит за динамический диапазон"
-                "ЦАП (0.00 - {dynamic_range:.2f} В)")
+                  f"ЦАП (0.00 - {self.dynamic_range:.2f} В)")
             print("Устанавливаем 0.0 В")
-            set_number(self, 0)
+            self.set_number(0)
 
-        set_number(self, int(voltage / self.dynamic_range * 255))
+        else:
+            self.set_number(int(voltage / self.dynamic_range * 255))
 
 
 if __name__ == "__main__":
