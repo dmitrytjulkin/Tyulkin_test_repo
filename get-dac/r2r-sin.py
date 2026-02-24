@@ -2,7 +2,7 @@ import r2r_dac as r2r
 import signal_generator_sin as sg
 import time
 
-amplitude = 3.2
+amplitude = 3.0
 signal_frequency = 10
 sampling_frequency = 1000
 
@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
         while True:
 
-            cur_amplitude = sg.get_sin_wave_amplitude(signal_frequency, )
+            cur_amplitude = sg.get_sin_wave_amplitude(signal_frequency, t)
             dac.set_voltage(cur_amplitude * amplitude)
             sg.wait_for_sampling_period(sampling_frequency)
 

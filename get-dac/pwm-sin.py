@@ -15,10 +15,10 @@ if __name__ == "__main__":
 
         while True:
             cur_amplitude = sg.get_sin_wave_amplitude(signal_frequency, t)
-            dac.set_voltage (amplitude * cur_amplitude)   # FIXME after pwm_dac (3rd task)
+            dac.set_voltage (amplitude * cur_amplitude)
             sg.wait_for_sampling_period(sampling_frequency)
 
-            t += sampling_frequency
+            t += sampling_period
 
     finally:
         dac.deinit()
