@@ -16,31 +16,38 @@ class R2R_ADC:
         GPIO.setup(self.comp_gpio, GPIO.IN)
 
     def deinit(self):
-        GPIO.output(self.gpio_bits, 0)
+        GPIO.output(self.bits_gpio, 0)
         GPIO.cleanup()
 
-    def dec2bin(value):
+    def dec2bin(self, value):
         return [int(element) for element in bin(value)[2:].zfill(8)] #returns binary array
 
     def num2dac(self, number):
-        signal = dec2bin(value)
-        GPIO.output(dac, signal)                                     #shows bin array on dac
-        return signal
+        GPIO.output(self.bits_gpio, self.dec2bin(number))                                     #shows bin array on dac
 
     def sequential_counting_adc(self):
         for value in range(256):
-            signal = num2dac(value)
-            voltage = value / self.dynamic_range * 255
-            # comparatorValue = GPIO.input(comparator)
-            # if comparatorValue == 0:
-            #     print ("ADC value = :{^3} -> {}, "
-            #            "input voltage = {.2f}".format(value, signal, voltage))
-            time.sleep(0.01)
+            self.num2dac(value)
+            
+            time.sleep(self.compare_time)
+
+            if GPIO.input(self.comp_gpio) == GPIO.HIGH:
+                return value
 
     def get_sc_voltage(self):
+        value = self.sequential_counting_adc()
+        voltage = value / 255.0 * self.dynamic_range
+        return voltage
 
 
-try:
-    dac = R2R_ADC(3.3)
-finally:
-    dac.deinit()
+
+if __name__ == "__main__":
+    try:
+        adc = R2R_ADC(4.5, 0.01, True)
+        # print ('\033[31mPASSED\033[0m')
+        while True:
+          voltage = adc.get_sc_voltage()
+          print ('\033[33m The actual voltage is \033[0m', voltage)
+
+    finally:
+        adc.deinit()
