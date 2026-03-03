@@ -8,7 +8,7 @@ class R2R_ADC:
         self.verbose = verbose
         self.compare_time = compare_time
 
-        self.bits_gpio = [26, 20, 19, 16, 13, 12, 25, 11]
+        self.bits_gpio = [11, 25, 12, 13, 16, 19, 20, 26]
         self.comp_gpio = 21
 
         GPIO.setmode(GPIO.BCM)
@@ -20,7 +20,7 @@ class R2R_ADC:
         GPIO.cleanup()
 
     def dec2bin(self, value):
-        return [int(element) for element in bin(value)[2:].zfill(8)] #returns binary array
+        return [int(element) for element in f"{value:08b}"][::-1] #returns binary array
 
     def num2dac(self, number):
         GPIO.output(self.bits_gpio, self.dec2bin(number))                                     #shows bin array on dac
