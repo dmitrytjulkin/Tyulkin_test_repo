@@ -12,6 +12,21 @@ def plot_voltage_vs_time(time, voltage, max_voltage):
     plt.grid()
     plt.show()
 
+def plot_sampling_period_hist(time):
+    sampling_periods = []
+
+    for i in range (len(time) - 1):
+        sampling_periods.append(abs(time[i] - time[i+1]))
+
+    plt.figure(figsize=(10,6))
+    plt.hist(sampling_periods)
+    plt.title('there is something')
+    plt.xlabel('x label')
+    plt.ylabel('y label')
+    plt.xlim(0, 0.06)
+    plt.grid()
+    plt.show()
+
 class R2R_ADC:
     def __init__(self, dynamic_range, compare_time = 0.01, verbose = False):
         self.dynamic_range = dynamic_range
@@ -66,7 +81,8 @@ if __name__ == "__main__":
             time_values.append(time.time())
             print ('\033[33m The actual voltage is \033[0m', voltage)
 
-        plot_voltage_vs_time(time_values, voltage_values, 4.5)
+        # plot_voltage_vs_time(time_values, voltage_values, 4.5)
+        plot_sampling_period_hist(time_values)
 
     finally:
         adc.deinit()
