@@ -10,7 +10,7 @@ duration = 5.0
 if __name__ == "__main__":
     try:
         start_time = time.time()
-        adc = R2R_ADC(4.5, 0.0001, True)
+        adc = R2R_ADC(3.3, 0.001, True)
 
         while time.time() - start_time < duration:
             voltage = adc.get_sar_voltage()
@@ -18,7 +18,7 @@ if __name__ == "__main__":
             time_values.append(time.time() - start_time)
             print ('\033[33m The actual voltage is \033[0m', voltage)
 
-        plot_voltage_vs_time(time_values, voltage_values, 4.5)
+        plot_voltage_vs_time(time_values, voltage_values, 3.2)
         plot_sampling_period_hist(time_values)
 
     finally:

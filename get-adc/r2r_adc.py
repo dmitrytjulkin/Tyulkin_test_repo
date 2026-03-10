@@ -7,8 +7,9 @@ class R2R_ADC:
         self.dynamic_range = dynamic_range
         self.verbose = verbose
         self.compare_time = compare_time
+        self.cur_res = 0
 
-        self.bits_gpio = [11, 25, 12, 13, 16, 19, 20, 26]
+        self.bits_gpio = [11, 25, 12, 13, 16, 19, 20, 26][::-1]
         self.comp_gpio = 21
 
         GPIO.setmode(GPIO.BCM)
@@ -20,10 +21,10 @@ class R2R_ADC:
         GPIO.cleanup()
 
     def dec2bin(self, value):
-        return [int(element) for element in f"{value:08b}"][::-1] #returns binary array
+        return [int(element) for element in bin(value)[2:].zfill(8)]   #returns binary array
 
     def num2dac(self, number):
-        GPIO.output(self.bits_gpio, self.dec2bin(number))                                     #shows bin array on dac
+        GPIO.output(self.bits_gpio, self.dec2bin(number))           #shows bin array on dac
 
     def sequential_counting_adc(self):
         for value in range(256):
@@ -33,6 +34,7 @@ class R2R_ADC:
 
             if GPIO.input(self.comp_gpio) == GPIO.HIGH:
                 return value
+        return 255
 
     def get_sc_voltage(self):
         value = self.sequential_counting_adc()
@@ -40,20 +42,41 @@ class R2R_ADC:
         return voltage
 
     def successive_approximation_adc(self):
-        left_ptr = 0
-        right_ptr = 255
+        time.sleep(self.compare_time)
+        cb = 7
+        self.cur_res = 0
 
-        for i in range (8):
-            middle = (right_ptr+left_ptr) // 2
-            self.num2dac(middle)
-            if GPIO.input(self.comp_gpio) == GPIO.HIGH:
-                right_ptr = middle
+        while (cb >= 0):
+            cmp = GPIO.input(self.comp_gpio)
+            if cmp > 0:
+                self.cur_res -= 2 ** cb
             else:
-                left_ptr = middle + 1
+                self.cur_res += 2 ** cb
 
-            print (f"left pointer: {left_ptr}, right pointer: {right_ptr}")
+            if self.cur_res >= 256:
+                self.cur_res = 255
+            if self.cur_res < 0:
+                self.cur_res = 0
 
-        return left_ptr
+            cb -= 1
+            self.num2dac(self.cur_res)
+            time.sleep(self.compare_time)
+            # time.sleep(1)
+            # print(f"cmp = {cmp}")
+        return self.cur_res 
+
+        # for i in range (8):
+        #     middle = (right_ptr+left_ptr) // 2
+        #     self.num2dac(middle)
+        #     if GPIO.input(self.comp_gpio) == GPIO.HIGH:
+        #         right_ptr = middle
+        #     else:
+        #         left_ptr = middle + 1
+        #     time.sleep(self.compare_time)
+
+            # print (f"left pointer: {left_ptr}, right pointer: {right_ptr}")
+        # print (f"left pointer: {left_ptr}, right pointer: {right_ptr}")
+        # return left_ptr
 
     def get_sar_voltage(self):
         code = self.successive_approximation_adc()
@@ -63,11 +86,11 @@ class R2R_ADC:
 
 if __name__ == "__main__":
     try:
-        adc = R2R_ADC(4.5, 0.0001, True)
+        adc = R2R_ADC(3.2, 0.001, True)
         # print ('\033[31mPASSED\033[0m')
         while True:
-        #   voltage = adc.get_sc_voltage()
-          voltage = adc.get_sar_voltage()
+          voltage = adc.get_sc_voltage()
+        #   voltage = adc.get_sar_voltage()
           print ('\033[33m The actual voltage is \033[0m', voltage)
 
     finally:
