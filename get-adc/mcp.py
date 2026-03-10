@@ -19,7 +19,7 @@ if __name__ == "__main__":
             print ('\033[33m The actual voltage is \033[0m', voltage)
 
         plot_voltage_vs_time(time_values, voltage_values, 3.3)
-        plot_sampling_period_hist(time_values)
+        # plot_sampling_period_hist(time_values)
 
     finally:
         adc.deinit()

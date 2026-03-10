@@ -42,16 +42,16 @@ class R2R_ADC:
         return voltage
 
     def successive_approximation_adc(self):
-        time.sleep(self.compare_time)
+        # time.sleep(self.compare_time)
         cb = 7
         self.cur_res = 0
 
         while (cb >= 0):
             cmp = GPIO.input(self.comp_gpio)
             if cmp > 0:
-                self.cur_res -= 2 ** cb
+                self.cur_res -= 1 << cb
             else:
-                self.cur_res += 2 ** cb
+                self.cur_res += 1 << cb
 
             if self.cur_res >= 256:
                 self.cur_res = 255
@@ -61,8 +61,88 @@ class R2R_ADC:
             cb -= 1
             self.num2dac(self.cur_res)
             time.sleep(self.compare_time)
-            # time.sleep(1)
-            # print(f"cmp = {cmp}")
+
+# ## 1
+#         cmp = GPIO.input(self.comp_gpio)
+#         if cmp > 0:
+#             self.cur_res -= 1 << cb
+#         else:
+#             self.cur_res += 1 << cb
+
+#         cb -= 1
+#         self.num2dac(self.cur_res)
+#         time.sleep(self.compare_time)
+# ## 2
+#         cmp = GPIO.input(self.comp_gpio)
+#         if cmp > 0:
+#             self.cur_res -= 1 << cb
+#         else:
+#             self.cur_res += 1 << cb
+
+#         cb -= 1
+#         self.num2dac(self.cur_res)
+#         time.sleep(self.compare_time)
+# ## 3
+#         cmp = GPIO.input(self.comp_gpio)
+#         if cmp > 0:
+#             self.cur_res -= 1 << cb
+#         else:
+#             self.cur_res += 1 << cb
+
+#         cb -= 1
+#         self.num2dac(self.cur_res)
+#         time.sleep(self.compare_time)
+# ## 4
+#         cmp = GPIO.input(self.comp_gpio)
+#         if cmp > 0:
+#             self.cur_res -= 1 << cb
+#         else:
+#             self.cur_res += 1 << cb
+
+#         cb -= 1
+#         self.num2dac(self.cur_res)
+#         time.sleep(self.compare_time)
+# ## 5
+#         cmp = GPIO.input(self.comp_gpio)
+#         if cmp > 0:
+#             self.cur_res -= 1 << cb
+#         else:
+#             self.cur_res += 1 << cb
+
+#         cb -= 1
+#         self.num2dac(self.cur_res)
+#         time.sleep(self.compare_time)
+# ## 6
+#         cmp = GPIO.input(self.comp_gpio)
+#         if cmp > 0:
+#             self.cur_res -= 1 << cb
+#         else:
+#             self.cur_res += 1 << cb
+
+#         cb -= 1
+#         self.num2dac(self.cur_res)
+#         time.sleep(self.compare_time)
+# ## 7
+#         cmp = GPIO.input(self.comp_gpio)
+#         if cmp > 0:
+#             self.cur_res -= 1 << cb
+#         else:
+#             self.cur_res += 1 << cb
+
+#         cb -= 1
+#         self.num2dac(self.cur_res)
+#         time.sleep(self.compare_time)
+# ## 8
+#         cmp = GPIO.input(self.comp_gpio)
+#         if cmp > 0:
+#             self.cur_res -= 1 << cb
+#         else:
+#             self.cur_res += 1 << cb
+
+#         cb -= 1
+#         self.num2dac(self.cur_res)
+#         time.sleep(self.compare_time)
+
         return self.cur_res 
 
         # for i in range (8):
@@ -89,9 +169,9 @@ if __name__ == "__main__":
         adc = R2R_ADC(3.2, 0.001, True)
         # print ('\033[31mPASSED\033[0m')
         while True:
-          voltage = adc.get_sc_voltage()
-        #   voltage = adc.get_sar_voltage()
-          print ('\033[33m The actual voltage is \033[0m', voltage)
+            voltage = adc.get_sc_voltage()
+            # voltage = adc.get_sar_voltage()
+            print ('\033[33m The actual voltage is \033[0m', voltage)
 
     finally:
         adc.deinit()

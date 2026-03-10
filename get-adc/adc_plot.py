@@ -20,9 +20,9 @@ def plot_sampling_period_hist(time):
 
     plt.figure(figsize=(10,6))
     plt.hist(sampling_periods)
-    plt.title('there is something')
-    plt.xlabel('x label')
-    plt.ylabel('y label')
+    plt.title('Распределение периодов дискретизации измерений по времени на одно измерение')
+    plt.xlabel('Количество измерений')
+    plt.ylabel('Период измерения, с')
     plt.xlim(0, 0.06)
     plt.grid()
     plt.show()
